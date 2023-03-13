@@ -1,8 +1,7 @@
-import { LightBulbIcon, SearchIcon } from '@primer/octicons-react'
+import { SearchIcon } from '@primer/octicons-react'
 import { useState } from 'preact/hooks'
 import { TriggerMode } from '../config'
 import ChatGPTQuery, { QueryStatus } from './ChatGPTQuery'
-import { endsWithQuestionMark } from './utils.js'
 
 interface Props {
   question: string
@@ -16,16 +15,16 @@ function ChatGPTCard(props: Props) {
   if (props.triggerMode === TriggerMode.Always) {
     return <ChatGPTQuery question={props.question} onStatusChange={props.onStatusChange} />
   }
-  if (props.triggerMode === TriggerMode.QuestionMark) {
-    if (endsWithQuestionMark(props.question.trim())) {
-      return <ChatGPTQuery question={props.question} onStatusChange={props.onStatusChange} />
-    }
-    return (
-      <p className="icon-and-text">
-        <LightBulbIcon size="small" /> 问号（？）触发模式：当问题以问号结尾时，自动请求ChatGPT
-      </p>
-    )
-  }
+  // if (props.triggerMode === TriggerMode.QuestionMark) {
+  //   if (endsWithQuestionMark(props.question.trim())) {
+  //     return <ChatGPTQuery question={props.question} onStatusChange={props.onStatusChange} />
+  //   }
+  //   return (
+  //     <p className="icon-and-text">
+  //       <LightBulbIcon size="small" /> 问号（？）触发模式：当问题以问号结尾时，自动请求ChatGPT
+  //     </p>
+  //   )
+  // }
   if (triggered) {
     return <ChatGPTQuery question={props.question} onStatusChange={props.onStatusChange} />
   }
