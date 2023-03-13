@@ -8,14 +8,14 @@ export enum TriggerMode {
 }
 
 export const TRIGGER_MODE_TEXT = {
-  [TriggerMode.Always]: { title: 'Always', desc: 'ChatGPT is queried on every search' },
+  [TriggerMode.Always]: { title: '自动', desc: '每次搜索自动请求ChatGPT' },
   [TriggerMode.QuestionMark]: {
-    title: 'Question Mark',
-    desc: 'When your query ends with a question mark (?)',
+    title: '问号❓触发',
+    desc: '仅当在问题结尾输入问号时 (?)触发',
   },
   [TriggerMode.Manually]: {
-    title: 'Manually',
-    desc: 'ChatGPT is queried when you manually click a button',
+    title: '手动触发',
+    desc: '仅当手动点击触发按钮时',
   },
 }
 
@@ -40,7 +40,7 @@ export enum Language {
 const userConfigWithDefaultValue = {
   triggerMode: TriggerMode.Always,
   theme: Theme.Auto,
-  language: Language.Auto,
+  language: Language.Chinese,
 }
 
 export type UserConfig = typeof userConfigWithDefaultValue

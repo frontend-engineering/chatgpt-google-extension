@@ -72,4 +72,9 @@ export const config: Record<string, SearchEngine> = {
     sidebarContainerQuery: ['#sidebar_results'],
     appendContainerQuery: [],
   },
+  zhihu: {
+    inputQuery: ['.QuestionHeader-title'],
+    sidebarContainerQuery: ['.css-1oy4rvw'],
+    appendContainerQuery: ['.Question-main'],
+  },
 }

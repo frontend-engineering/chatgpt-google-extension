@@ -94,7 +94,7 @@ function ChatGPTQuery(props: Props) {
         <ReactMarkdown rehypePlugins={[[rehypeHighlight, { detect: true }]]}>
           {answer.text}
         </ReactMarkdown>
-        {done && showTip && (
+        {/* {done && showTip && (
           <p className="italic mt-2">
             Enjoy this extension? Give us a 5-star rating at{' '}
             <a
@@ -105,7 +105,7 @@ function ChatGPTQuery(props: Props) {
               Chrome Web Store
             </a>
           </p>
-        )}
+        )} */}
       </div>
     )
   }
@@ -113,7 +113,7 @@ function ChatGPTQuery(props: Props) {
   if (error === 'UNAUTHORIZED' || error === 'CLOUDFLARE') {
     return (
       <p>
-        Please login and pass Cloudflare check at{' '}
+        请先登录页面{' '}
         <a href="https://chat.openai.com" target="_blank" rel="noreferrer">
           chat.openai.com
         </a>
