@@ -22,7 +22,7 @@ function ChatGPTCard(props: Props) {
     }
     return (
       <p className="icon-and-text">
-        <LightBulbIcon size="small" /> Trigger ChatGPT by appending a question mark after your query
+        <LightBulbIcon size="small" /> 问号（？）触发模式：当问题以问号结尾时，自动请求ChatGPT
       </p>
     )
   }
@@ -31,7 +31,7 @@ function ChatGPTCard(props: Props) {
   }
   return (
     <p className="icon-and-text cursor-pointer" onClick={() => setTriggered(true)}>
-      <SearchIcon size="small" /> Ask ChatGPT for this query
+      <SearchIcon size="small" /> 点击询问ChatGPT
     </p>
   )
 }

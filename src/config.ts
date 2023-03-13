@@ -3,16 +3,16 @@ import Browser from 'webextension-polyfill'
 
 export enum TriggerMode {
   Always = 'always',
-  QuestionMark = 'questionMark',
+  // QuestionMark = 'questionMark',
   Manually = 'manually',
 }
 
 export const TRIGGER_MODE_TEXT = {
   [TriggerMode.Always]: { title: '自动', desc: '每次搜索自动请求ChatGPT' },
-  [TriggerMode.QuestionMark]: {
-    title: '问号❓触发',
-    desc: '仅当在问题结尾输入问号时 (?)触发',
-  },
+  // [TriggerMode.QuestionMark]: {
+  //   title: '问号❓触发',
+  //   desc: '仅当在问题结尾输入问号时 (?)触发',
+  // },
   [TriggerMode.Manually]: {
     title: '手动触发',
     desc: '仅当手动点击触发按钮时',
