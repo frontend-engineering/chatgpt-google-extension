@@ -56,7 +56,7 @@ export async function updateUserConfig(updates: Partial<UserConfig>) {
 }
 
 export enum ProviderType {
-  ChatGPT = 'chatgpt',
+  Proxy = 'proxy',
   GPT3 = 'gpt3',
 }
 
@@ -64,22 +64,28 @@ interface GPT3ProviderConfig {
   model: string
   apiKey: string
 }
+interface ProxyProviderConfig {
+  model: string
+  apiKey: string
+}
 
 export interface ProviderConfigs {
   provider: ProviderType
   configs: {
-    [ProviderType.GPT3]: GPT3ProviderConfig | undefined
+    [ProviderType.GPT3]?: GPT3ProviderConfig | undefined
+    [ProviderType.Proxy]?: ProxyProviderConfig | undefined
   }
 }
 
 export async function getProviderConfigs(): Promise<ProviderConfigs> {
-  const { provider = ProviderType.ChatGPT } = await Browser.storage.local.get('provider')
-  const configKey = `provider:${ProviderType.GPT3}`
-  const result = await Browser.storage.local.get(configKey)
+  const { provider = ProviderType.Proxy } = await Browser.storage.local.get('provider')
+  const gpt3Config = await Browser.storage.local.get(`provider:${ProviderType.GPT3}`)
+  const proxyConfig = await Browser.storage.local.get(`provider:${ProviderType.Proxy}`)
   return {
     provider,
     configs: {
-      [ProviderType.GPT3]: result[configKey],
+      [ProviderType.GPT3]: gpt3Config[`provider:${ProviderType.GPT3}`],
+      [ProviderType.Proxy]: proxyConfig[`provider:${ProviderType.Proxy}`],
     },
   }
 }
@@ -91,5 +97,6 @@ export async function saveProviderConfigs(
   return Browser.storage.local.set({
     provider,
     [`provider:${ProviderType.GPT3}`]: configs[ProviderType.GPT3],
+    [`provider:${ProviderType.Proxy}`]: configs[ProviderType.Proxy],
   })
 }

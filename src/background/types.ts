@@ -8,6 +8,14 @@ export type Event =
   | {
       type: 'done'
     }
+  | {
+      type: 'error'
+      data: any
+    }
+  | {
+      type: 'result'
+      data: Answer
+    }
 
 export interface GenerateAnswerParams {
   prompt: string

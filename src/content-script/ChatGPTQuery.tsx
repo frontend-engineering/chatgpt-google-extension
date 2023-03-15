@@ -23,6 +23,7 @@ function ChatGPTQuery(props: Props) {
   const [done, setDone] = useState(false)
   const [showTip, setShowTip] = useState(false)
   const [status, setStatus] = useState<QueryStatus>()
+  const [showResend, setShowResend] = useState(false)
 
   useEffect(() => {
     props.onStatusChange?.(status)
@@ -31,14 +32,27 @@ function ChatGPTQuery(props: Props) {
   useEffect(() => {
     const port = Browser.runtime.connect()
     const listener = (msg: any) => {
-      if (msg.text) {
-        setAnswer(msg)
+      console.log('resp got: ', msg)
+      if (msg.type === 'answer') {
+        setAnswer(msg.data)
+        setStatus('success')
+      } else if (msg.type === 'error') {
+        console.log('error got', msg)
+        setError(msg.data?.error || msg.data)
+        setStatus('error')
+        setShowResend(true)
+      } else if (msg.type === 'done') {
+        setDone(true)
+        setShowResend(true)
+      } else if (msg.type === 'result') {
+        setDone(true)
+        setShowResend(true)
+        setAnswer(msg.data)
         setStatus('success')
       } else if (msg.error) {
         setError(msg.error)
         setStatus('error')
-      } else if (msg.event === 'DONE') {
-        setDone(true)
+        setShowResend(true)
       }
     }
     port.onMessage.addListener(listener)
@@ -89,6 +103,11 @@ function ChatGPTQuery(props: Props) {
             messageId={answer.messageId}
             conversationId={answer.conversationId}
             answerText={answer.text}
+            pending={!showResend}
+            refresh={() => {
+              console.log('refreshing...')
+              setRetry(1)
+            }}
           />
         </div>
         <ReactMarkdown rehypePlugins={[[rehypeHighlight, { detect: true }]]}>

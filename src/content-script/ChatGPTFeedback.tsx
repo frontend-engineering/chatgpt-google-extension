@@ -1,4 +1,4 @@
-import { CheckIcon, CopyIcon } from '@primer/octicons-react'
+import { CheckIcon, CopyIcon, SyncIcon } from '@primer/octicons-react'
 import { useEffect } from 'preact/hooks'
 import { memo, useCallback, useState } from 'react'
 import Browser from 'webextension-polyfill'
@@ -7,6 +7,8 @@ interface Props {
   messageId: string
   conversationId: string
   answerText: string
+  pending: boolean
+  refresh?: () => void
 }
 
 function ChatGPTFeedback(props: Props) {
@@ -50,6 +52,11 @@ function ChatGPTFeedback(props: Props) {
     setCopied(true)
   }, [props.answerText])
 
+  const resend = (e: any) => {
+    e.preventDefault()
+    props.refresh && props.refresh()
+  }
+
   useEffect(() => {
     if (copied) {
       const timer = setTimeout(() => {
@@ -64,9 +71,7 @@ function ChatGPTFeedback(props: Props) {
       <span onClick={clickCopyToClipboard}>
         {copied ? <CheckIcon size={14} /> : <CopyIcon size={14} />}
       </span>
-      {/* <span onClick={clickCopyToClipboard}>
-        {copied ? <CheckIcon size={14} /> : <SyncIcon size={14} />}
-      </span> */}
+      <span onClick={resend}>{props.pending ? null : <SyncIcon size={14} />}</span>
     </div>
   )
 }

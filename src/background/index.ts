@@ -1,16 +1,16 @@
 import Browser from 'webextension-polyfill'
 import { getProviderConfigs, ProviderType } from '../config'
-import { ChatGPTProvider, getChatGPTAccessToken, sendMessageFeedback } from './providers/chatgpt'
 import { OpenAIProvider } from './providers/openai'
+import { getProxyAccessToken, ProxyProvider } from './providers/proxy'
 import { Provider } from './types'
 
 async function generateAnswers(port: Browser.Runtime.Port, question: string) {
   const providerConfigs = await getProviderConfigs()
-
+  console.log('--get provider config = ', providerConfigs)
   let provider: Provider
-  if (providerConfigs.provider === ProviderType.ChatGPT) {
-    const token = await getChatGPTAccessToken()
-    provider = new ChatGPTProvider(token)
+  if (providerConfigs.provider === ProviderType.Proxy) {
+    const token = await getProxyAccessToken()
+    provider = new ProxyProvider(token)
   } else if (providerConfigs.provider === ProviderType.GPT3) {
     const { apiKey, model } = providerConfigs.configs[ProviderType.GPT3]!
     provider = new OpenAIProvider(apiKey, model)
@@ -28,11 +28,7 @@ async function generateAnswers(port: Browser.Runtime.Port, question: string) {
     prompt: question,
     signal: controller.signal,
     onEvent(event) {
-      if (event.type === 'done') {
-        port.postMessage({ event: 'DONE' })
-        return
-      }
-      port.postMessage(event.data)
+      port.postMessage(event)
     },
   })
 }
@@ -50,13 +46,10 @@ Browser.runtime.onConnect.addListener((port) => {
 })
 
 Browser.runtime.onMessage.addListener(async (message) => {
-  if (message.type === 'FEEDBACK') {
-    const token = await getChatGPTAccessToken()
-    await sendMessageFeedback(token, message.data)
-  } else if (message.type === 'OPEN_OPTIONS_PAGE') {
+  if (message.type === 'OPEN_OPTIONS_PAGE') {
     Browser.runtime.openOptionsPage()
   } else if (message.type === 'GET_ACCESS_TOKEN') {
-    return getChatGPTAccessToken()
+    return getProxyAccessToken()
   }
 })
 

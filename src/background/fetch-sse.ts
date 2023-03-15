@@ -4,7 +4,7 @@ import { streamAsyncIterable } from './stream-async-iterable.js'
 
 export async function fetchSSE(
   resource: string,
-  options: RequestInit & { onMessage: (message: string) => void },
+  options: RequestInit & { onMessage: (message: any) => void },
 ) {
   const { onMessage, ...fetchOptions } = options
   const resp = await fetch(resource, fetchOptions)
@@ -14,7 +14,7 @@ export async function fetchSSE(
   }
   const parser = createParser((event) => {
     if (event.type === 'event') {
-      onMessage(event.data)
+      onMessage(event)
     }
   })
   for await (const chunk of streamAsyncIterable(resp.body!)) {

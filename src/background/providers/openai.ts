@@ -31,13 +31,13 @@ export class OpenAIProvider implements Provider {
       }),
       onMessage(message) {
         console.debug('sse message', message)
-        if (message === '[DONE]') {
+        if (message?.data === '[DONE]') {
           params.onEvent({ type: 'done' })
           return
         }
         let data
         try {
-          data = JSON.parse(message)
+          data = JSON.parse(message?.data)
           const text = data.choices[0].text
           if (text === '<|im_end|>' || text === '<|im_sep|>') {
             return
