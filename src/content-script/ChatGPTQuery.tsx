@@ -38,7 +38,13 @@ function ChatGPTQuery(props: Props) {
         setStatus('success')
       } else if (msg.type === 'error') {
         console.log('error got', msg)
-        setError(msg.data?.error || msg.data)
+        const errMsg = msg.data?.error || msg.data?.message || msg.data
+        let instruction = errMsg
+        if (errMsg === 'Account not found') {
+          instruction = '请至插件Options配置页面重新登录账户'
+          openOptionsPage()
+        }
+        setError(instruction || errMsg)
         setStatus('error')
         setShowResend(true)
       } else if (msg.type === 'done') {

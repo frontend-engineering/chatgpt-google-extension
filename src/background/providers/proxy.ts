@@ -33,11 +33,39 @@ export class ProxyProvider implements Provider {
     return 'gpt-3.5-turbo'
   }
 
+  async applyHash(prompt: string) {
+    return fetch('https://api.my.webinfra.cloud/api/zhiplus/apply', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${this.token}`,
+      },
+      body: JSON.stringify({
+        question: prompt,
+      }),
+    })
+      .then((resp) => resp.json())
+      .then((resp) => {
+        if (resp.success) {
+          return resp.data
+        }
+        throw new Error(resp.message || 'unauthorized')
+      })
+  }
+
   async generateAnswer(params: GenerateAnswerParams) {
     const modelName = await this.getModelName()
     console.debug('Using model:', modelName)
+    const hashResp = await this.applyHash(params.prompt).catch((err) => {
+      params.onEvent({ type: 'error', data: { message: err?.message || 'unauthorized' } })
+    })
+    const { id, hash } = hashResp || {}
+    console.log('hash rep: ', id, hash)
+    if (!hash || !id) {
+      return {}
+    }
     let result = ''
-    await fetchSSE('http://localhost:3000/api/chat', {
+    await fetchSSE('https://chat2.ms3.webinfra.cloud/api/chat', {
       method: 'POST',
       signal: params.signal,
       headers: {
@@ -47,6 +75,7 @@ export class ProxyProvider implements Provider {
       body: JSON.stringify({
         message: params.prompt,
         stream: true,
+        hash,
       }),
       onMessage(message: any) {
         console.debug('proxy sse message', message)

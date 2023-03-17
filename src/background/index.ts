@@ -6,10 +6,14 @@ import { Provider } from './types'
 
 async function generateAnswers(port: Browser.Runtime.Port, question: string) {
   const providerConfigs = await getProviderConfigs()
-  console.log('--get provider config = ', providerConfigs)
   let provider: Provider
   if (providerConfigs.provider === ProviderType.Proxy) {
-    const token = await getProxyAccessToken()
+    const token = providerConfigs.configs.proxy?.token
+    if (!token) {
+      console.error('goto login')
+      Browser.runtime.openOptionsPage()
+      throw new Error('Need Login')
+    }
     provider = new ProxyProvider(token)
   } else if (providerConfigs.provider === ProviderType.GPT3) {
     const { apiKey, model } = providerConfigs.configs[ProviderType.GPT3]!

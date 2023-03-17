@@ -65,8 +65,10 @@ interface GPT3ProviderConfig {
   apiKey: string
 }
 interface ProxyProviderConfig {
-  model: string
-  apiKey: string
+  host?: string
+  username?: string
+  token?: string
+  tokenExp?: number
 }
 
 export interface ProviderConfigs {
