@@ -23,8 +23,8 @@ interface ConfigProps {
 
 const initSdk = async () => {
   const cashier = new Cashier({
-    appId: 'KRFY',
-    appToken: 'KLn7KPny63GSTLEehGmu5PDN',
+    appId: 'CHQZ',
+    appToken: 'vNZeNQbFnL5EJx72Y37VQkem',
     storageType: 'chrome',
   })
   await cashier.init().catch((err) => {
