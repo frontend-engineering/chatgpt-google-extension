@@ -57,7 +57,20 @@ const ConfigPanel: FC<ConfigProps> = ({ config, models }) => {
     e.preventDefault()
     console.log('user login ', e)
     sdk
-      ?.login()
+      ?.can({
+        plan: 1,
+        auto: true,
+      })
+      .then((info) => {
+        console.log('can resp info: ', info)
+        if (info instanceof Error) {
+          throw new Error('用户订阅失败')
+        }
+        if (info?.qualified) {
+          console.log('订阅成功')
+        }
+        return sdk.getUserInfo()
+      })
       .then((info) => {
         setUsername(info?.name || '')
         return sdk.getTokens()
