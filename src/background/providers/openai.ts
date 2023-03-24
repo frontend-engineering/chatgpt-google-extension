@@ -7,16 +7,35 @@ export class OpenAIProvider implements Provider {
     this.model = model
   }
 
-  private buildPrompt(prompt: string): string {
-    if (this.model.startsWith('text-chat-davinci')) {
-      return `Respond conversationally.<|im_end|>\n\nUser: ${prompt}<|im_sep|>\nChatGPT:`
+  private buildPrompt(prompt: string): any[] {
+    const startToken = '||>'
+    const endToken = ''
+    const currentDateString = new Date().toString()
+    const promptPrefix = `${startToken}Instructions:\nYou are ChatGPT, a large language model trained by OpenAI. Respond conversationally.\nCurrent date: ${currentDateString}${endToken}\n\n`
+    const promptSuffix = `${startToken}ChatGPT:\n` // Prompt ChatGPT to respond.
+
+    const instructionsPayload = {
+      role: 'system',
+      name: 'instructions',
+      content: promptPrefix,
     }
-    return prompt
+
+    const messagePayload = {
+      role: 'system',
+      name: 'user',
+      content: `${prompt} ${promptSuffix}`,
+    }
+    return [instructionsPayload, messagePayload]
+    // if (this.model.startsWith('text-chat-davinci')) {
+    //   return `Respond conversationally.<|im_end|>\n\nUser: ${prompt}<|im_sep|>\nChatGPT:`
+    // }
+    // return prompt
   }
 
   async generateAnswer(params: GenerateAnswerParams) {
     let result = ''
-    await fetchSSE('https://api.openai.com/v1/completions', {
+
+    await fetchSSE('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       signal: params.signal,
       headers: {
@@ -25,7 +44,7 @@ export class OpenAIProvider implements Provider {
       },
       body: JSON.stringify({
         model: this.model,
-        prompt: this.buildPrompt(params.prompt),
+        messages: this.buildPrompt(params.prompt),
         stream: true,
         max_tokens: 2048,
       }),
@@ -38,7 +57,10 @@ export class OpenAIProvider implements Provider {
         let data
         try {
           data = JSON.parse(message?.data)
-          const text = data.choices[0].text
+          const text = data.choices[0]?.delta?.content
+          if (!text) {
+            return
+          }
           if (text === '<|im_end|>' || text === '<|im_sep|>') {
             return
           }
