@@ -10,7 +10,10 @@ import {
   useInput,
   useToasts,
 } from '@geist-ui/core'
+import LogIn from '@geist-ui/icons/logIn'
+import LogOut from '@geist-ui/icons/logOut'
 import Settings from '@geist-ui/icons/settings'
+
 import { FC, useCallback, useEffect, useState } from 'react'
 import useSWR from 'swr'
 import { fetchExtensionConfigs } from '../api'
@@ -44,6 +47,7 @@ const ConfigPanel: FC<ConfigProps> = ({ config, models }) => {
   const [model, setModel] = useState(config.configs[ProviderType.GPT3]?.model ?? models[0])
   const [sdk, setSdk] = useState<Cashier | null>(null)
   const [username, setUsername] = useState('')
+  const [amount, setAmount] = useState(0)
   const [token, setToken] = useState<string | undefined>(undefined)
   const [tokenExp, setTokenExp] = useState<number>(new Date().valueOf() - 1000)
   const { setToast } = useToasts()
@@ -58,7 +62,7 @@ const ConfigPanel: FC<ConfigProps> = ({ config, models }) => {
     console.log('user login ', e)
     sdk
       ?.can({
-        plan: 1,
+        count: 1,
         auto: true,
       })
       .then((info) => {
@@ -73,6 +77,7 @@ const ConfigPanel: FC<ConfigProps> = ({ config, models }) => {
       })
       .then((info) => {
         setUsername(info?.name || '')
+        setAmount(info?.profile?.amount || 0)
         return sdk.getTokens()
       })
       .then((tokens) => {
@@ -86,9 +91,23 @@ const ConfigPanel: FC<ConfigProps> = ({ config, models }) => {
     e.preventDefault()
     console.log('user logout')
     setUsername('')
+    setAmount(0)
     setToken(undefined)
     setTokenExp(0)
     sdk?.logout()
+  }
+
+  const gotoAccount = (e: any) => {
+    e.preventDefault()
+    window.open('https://reader.webinfra.cloud/zhi-plus/account')
+  }
+
+  const purchase = (e: any) => {
+    e.preventDefault()
+    sdk?.getProducts().then((list) => {
+      console.log('products list: ', list)
+      sdk?.purchase({})
+    })
   }
 
   const save = useCallback(async () => {
@@ -131,6 +150,7 @@ const ConfigPanel: FC<ConfigProps> = ({ config, models }) => {
       sdk.getUserInfo().then((info) => {
         console.log('get user info: ', info)
         setUsername(info?.name || '')
+        setAmount(info?.profile?.amount || 0)
       })
     }
   }, [sdk])
@@ -138,6 +158,30 @@ const ConfigPanel: FC<ConfigProps> = ({ config, models }) => {
   useEffect(() => {
     setupSDK()
   }, [])
+
+  const renderAmountButton = (amount: number) => {
+    return amount > 0 ? (
+      <Button type="success" ghost auto scale={0.5} icon={<Settings />} onClick={gotoAccount}>
+        额度 {amount}
+      </Button>
+    ) : (
+      <Button type="success" ghost auto scale={0.5} icon={<Settings />} onClick={purchase}>
+        购买额度
+      </Button>
+    )
+  }
+
+  const renderLogButton = (name: string) => {
+    return name ? (
+      <Button type="success" ghost auto scale={0.5} icon={<LogOut />} onClick={userLogout}>
+        退出
+      </Button>
+    ) : (
+      <Button type="success" ghost auto scale={0.5} icon={<LogIn />} onClick={userLogin}>
+        登录
+      </Button>
+    )
+  }
   return (
     <div className="flex flex-col gap-3">
       <Tabs value={tab} onChange={(v) => setTab(v as ProviderType)}>
@@ -148,32 +192,9 @@ const ConfigPanel: FC<ConfigProps> = ({ config, models }) => {
           <Spacer h={0.5} />
           <Grid.Container gap={1.5}>
             {/* <Grid xs={20}><Input htmlType="text" label="Host" scale={2 / 3} width="100%" {...proxyHostBindings} /></Grid> */}
-            <Grid xs={20}>{username ? '已登录：' + username : '未登录'}</Grid>
-            <Grid xs={4}>
-              {username ? (
-                <Button
-                  type="success"
-                  ghost
-                  auto
-                  scale={0.5}
-                  icon={<Settings />}
-                  onClick={userLogout}
-                >
-                  退出
-                </Button>
-              ) : (
-                <Button
-                  type="success"
-                  ghost
-                  auto
-                  scale={0.5}
-                  icon={<Settings />}
-                  onClick={userLogin}
-                >
-                  登录
-                </Button>
-              )}
-            </Grid>
+            <Grid xs={12}>{username ? '已登录：' + username : '未登录'}</Grid>
+            <Grid xs={8}>{username ? renderAmountButton(amount) : null}</Grid>
+            <Grid xs={4}>{renderLogButton(username)}</Grid>
           </Grid.Container>
         </Tabs.Item>
         <Tabs.Item label="OpenAI API" value={ProviderType.GPT3}>
