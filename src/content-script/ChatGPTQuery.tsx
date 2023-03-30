@@ -43,7 +43,17 @@ function ChatGPTQuery(props: Props) {
         if (errMsg === 'Account not found') {
           instruction = '请至插件Options配置页面重新登录账户'
           openOptionsPage()
+        } else if (errMsg === 'Unauthorized') {
+          // Error1: Limit Reached
+          instruction = '未获取到登录信息，请至插件Options配置页面登录'
+          openOptionsPage()
+        } else if (errMsg === 'Limit Reached') {
+          // Error2: Unauthorized
+          console.log('limit reached ')
+          instruction = '额度达到限制，请购买额度包，或等待免费额度刷新'
+          openOptionsPage()
         }
+
         setError(instruction || errMsg)
         setStatus('error')
         setShowResend(true)

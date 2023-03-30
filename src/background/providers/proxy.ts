@@ -57,6 +57,9 @@ export class ProxyProvider implements Provider {
     const modelName = await this.getModelName()
     console.debug('Using model:', modelName)
     const hashResp = await this.applyHash(params.prompt).catch((err) => {
+      // Error1: Limit Reached
+      // Error2: Unauthorized
+      console.error('apply failed: ', err)
       params.onEvent({ type: 'error', data: { message: err?.message || 'unauthorized' } })
     })
     const { id, hash } = hashResp || {}

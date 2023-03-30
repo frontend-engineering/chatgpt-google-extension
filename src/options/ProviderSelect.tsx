@@ -186,11 +186,11 @@ const ConfigPanel: FC<ConfigProps> = ({ config, models }) => {
     <div className="flex flex-col gap-3">
       <Tabs value={tab} onChange={(v) => setTab(v as ProviderType)}>
         <Tabs.Item label="ChatGPT webapp" value={ProviderType.Proxy}>
-          <span style={{ display: 'block' }}>
+          <span style={{ display: 'block', color: 'gray', fontSize: 'small' }}>
             代理服务, <span className="font-semibold">不需要翻墙</span>
           </span>
           <Spacer h={0.5} />
-          <Grid.Container gap={1.5}>
+          <Grid.Container gap={1.5} style={{ display: 'block', color: 'gray', fontSize: 'small' }}>
             {/* <Grid xs={20}><Input htmlType="text" label="Host" scale={2 / 3} width="100%" {...proxyHostBindings} /></Grid> */}
             <Grid xs={12}>{username ? '已登录：' + username : '未登录'}</Grid>
             <Grid xs={8}>{username ? renderAmountButton(amount) : null}</Grid>
