@@ -50,6 +50,7 @@ const ConfigPanel: FC<ConfigProps> = ({ config, models }) => {
   const [amount, setAmount] = useState(0)
   const [token, setToken] = useState<string | undefined>(undefined)
   const [tokenExp, setTokenExp] = useState<number>(new Date().valueOf() - 1000)
+  const [patch, setPatch] = useState(false)
   const { setToast } = useToasts()
 
   const setupSDK = () => {
@@ -73,7 +74,9 @@ const ConfigPanel: FC<ConfigProps> = ({ config, models }) => {
         if (info?.qualified) {
           console.log('订阅成功')
         }
-        return sdk.getUserInfo()
+        return sdk.getUserInfo({
+          refresh: true,
+        })
       })
       .then((info) => {
         setUsername(info?.name || '')
@@ -84,9 +87,7 @@ const ConfigPanel: FC<ConfigProps> = ({ config, models }) => {
         console.log('tokens: ', tokens?.accessToken, tokens)
         setToken(tokens?.accessToken)
         setTokenExp(tokens?.expireAt || 0)
-      })
-      .then(() => {
-        save()
+        setPatch(true)
       })
   }
 
@@ -98,9 +99,7 @@ const ConfigPanel: FC<ConfigProps> = ({ config, models }) => {
     setToken(undefined)
     setTokenExp(0)
     sdk?.logout()
-    setTimeout(() => {
-      save()
-    }, 500)
+    setPatch(true)
   }
 
   const gotoAccount = (e: any) => {
@@ -141,16 +140,19 @@ const ConfigPanel: FC<ConfigProps> = ({ config, models }) => {
       },
     })
     setToast({ text: 'Changes saved', type: 'success' })
-  }, [apiKeyBindings.value, username, token, tokenExp, model, models, setToast, tab])
+    setPatch(false)
+  }, [apiKeyBindings.value, username, token, tokenExp, model, models, setToast, tab, patch])
 
-  // useEffect(() => {
-  //   // 这里只在登录之后，做个小trick，自动保存下，其余case不管，需要用户手动保存
-  //   save()
-  // }, [token])
+  useEffect(() => {
+    if (patch) {
+      // 这里只在登录之后，做个小trick，自动保存下，其余case不管，需要用户手动保存
+      save()
+    }
+  }, [patch])
 
   useEffect(() => {
     if (sdk) {
-      sdk.getUserInfo().then((info) => {
+      sdk.getUserInfo({ refresh: true }).then((info) => {
         console.log('get user info: ', info)
         setUsername(info?.name || '')
         setAmount(info?.profile?.amount || 0)

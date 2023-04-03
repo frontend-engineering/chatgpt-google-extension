@@ -9,7 +9,7 @@
     "watch": "chokidar src -c 'npm run build'"
   },
   "dependencies": {
-    "@cashier/web": "^0.2.12",
+    "@cashier/web": "^0.2.15",
     "@geist-ui/core": "^2.3.8",
     "@geist-ui/icons": "^1.0.2",
     "@primer/octicons-react": "^17.9.0",
