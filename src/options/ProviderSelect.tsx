@@ -85,6 +85,9 @@ const ConfigPanel: FC<ConfigProps> = ({ config, models }) => {
         setToken(tokens?.accessToken)
         setTokenExp(tokens?.expireAt || 0)
       })
+      .then(() => {
+        save()
+      })
   }
 
   const userLogout = (e: any) => {
@@ -95,6 +98,9 @@ const ConfigPanel: FC<ConfigProps> = ({ config, models }) => {
     setToken(undefined)
     setTokenExp(0)
     sdk?.logout()
+    setTimeout(() => {
+      save()
+    }, 500)
   }
 
   const gotoAccount = (e: any) => {
@@ -123,7 +129,6 @@ const ConfigPanel: FC<ConfigProps> = ({ config, models }) => {
     }
 
     console.log('saving tab: ', tab)
-    console.log('proxy config ', token, username, tokenExp)
     await saveProviderConfigs(tab, {
       [ProviderType.GPT3]: {
         model,
@@ -138,12 +143,10 @@ const ConfigPanel: FC<ConfigProps> = ({ config, models }) => {
     setToast({ text: 'Changes saved', type: 'success' })
   }, [apiKeyBindings.value, username, token, tokenExp, model, models, setToast, tab])
 
-  useEffect(() => {
-    // 这里只在登录之后，做个小trick，自动保存下，其余case不管，需要用户手动保存
-    if (token) {
-      save()
-    }
-  }, [token, username])
+  // useEffect(() => {
+  //   // 这里只在登录之后，做个小trick，自动保存下，其余case不管，需要用户手动保存
+  //   save()
+  // }, [token])
 
   useEffect(() => {
     if (sdk) {
