@@ -84,7 +84,7 @@ async function run() {
 
 const mountEdit = () => {
   // QuestionHeader-side
-  ;(document.querySelector('.QuestionRichText-more') as any).click()
+  ;(document.querySelector('.QuestionRichText-more') as any)?.click()
   // QuestionHeaderActions
   const qestionContainer = document.querySelector('.QuestionHeader-footer-inner')!
   const newBtnContainer = document.createElement('div')
