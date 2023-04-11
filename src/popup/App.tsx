@@ -78,7 +78,8 @@ function App() {
     })
   }
 
-  const openOptionsPage = useCallback(() => {
+  const openOptionsPage = useCallback((e: any) => {
+    e.preventDefault()
     Browser.runtime.sendMessage({ type: 'OPEN_OPTIONS_PAGE' })
   }, [])
 
@@ -163,12 +164,48 @@ function App() {
                   }}
                 >
                   点击查看{' '}
+                  <a href="" target="_blank" rel="noreferrer" onClick={openOptionsPage}>
+                    本地配置
+                  </a>
+                </p>
+                <p
+                  className="text-base px-2 text-center"
+                  style={{
+                    color: 'gray',
+                    fontSize: 'small',
+                    paddingLeft: 0,
+                    // position: 'fixed',
+                    // bottom: '20px',
+                    // left: '50%',
+                    // transform: 'translateX(-50%)',
+                    width: '100%',
+                  }}
+                >
+                  点击查看{' '}
                   <a
                     href="https://reader.webinfra.cloud/zhi-plus/account"
                     target="_blank"
                     rel="noreferrer"
                   >
                     账户详情
+                  </a>
+                </p>
+                <p
+                  className="text-base px-2 text-center"
+                  style={{
+                    color: 'gray',
+                    fontSize: 'small',
+                    paddingLeft: 0,
+                    // position: 'fixed',
+                    // bottom: '20px',
+                    // left: '50%',
+                    // transform: 'translateX(-50%)',
+                    width: '100%',
+                  }}
+                >
+                  点击查看{' '}
+                  <a href="https://reader.webinfra.cloud/zhi-plus" target="_blank" rel="noreferrer">
+                    产品首页
                   </a>
                 </p>
               </Tabs.Item>

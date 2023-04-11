@@ -1,6 +1,7 @@
 import Cashier from '@cashier/web'
 import {
   Button,
+  Divider,
   Grid,
   Input,
   Select,
@@ -201,6 +202,21 @@ const ConfigPanel: FC<ConfigProps> = ({ config, models }) => {
             <Grid xs={8}>{username ? renderAmountButton(amount) : null}</Grid>
             <Grid xs={4}>{renderLogButton(username)}</Grid>
           </Grid.Container>
+          <Divider />
+          <p
+            style={{
+              color: 'gray',
+              fontSize: 'small',
+              paddingLeft: 0,
+              textAlign: 'right',
+              width: '100%',
+            }}
+          >
+            点击查看{' '}
+            <a href="https://reader.webinfra.cloud/zhi-plus" target="_blank" rel="noreferrer">
+              产品首页
+            </a>
+          </p>
         </Tabs.Item>
         <Tabs.Item label="OpenAI API" value={ProviderType.GPT3}>
           <div className="flex flex-col gap-2">
