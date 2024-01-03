@@ -22,8 +22,8 @@ function App() {
 
   const initSdk = async () => {
     const cashier = new Cashier({
-      appId: 'CHQZ',
-      appToken: 'vNZeNQbFnL5EJx72Y37VQkem',
+      appId: 'XFAQ',
+      appToken: 'nPDSjzXPii7tb0vrU15oD7Li',
       storageType: 'chrome',
     })
     await cashier.init().catch((err) => {

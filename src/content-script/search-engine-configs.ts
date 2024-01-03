@@ -74,7 +74,7 @@ export const config: Record<string, SearchEngine> = {
   },
   zhihu: {
     inputQuery: ['.App-main .QuestionHeader-title', '.App-main .QuestionRichText'],
-    sidebarContainerQuery: ['.css-1oy4rvw'],
+    sidebarContainerQuery: ['.Question-sideColumn', '.Question-sideColumn--sticky', '.css-1qyytj7'],
     appendContainerQuery: ['.Question-main'],
   },
 }

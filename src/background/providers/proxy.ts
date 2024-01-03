@@ -34,7 +34,7 @@ export class ProxyProvider implements Provider {
   }
 
   async applyHash(prompt: string) {
-    return fetch('https://api.my.webinfra.cloud/api/zhiplus/apply', {
+    return fetch('https://api.webinfra.cloud/v1-flowda-api/zhiplus/apply', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -68,7 +68,7 @@ export class ProxyProvider implements Provider {
       return {}
     }
     let result = ''
-    await fetchSSE('https://chat2.ms3.webinfra.cloud/api/chat', {
+    await fetchSSE('http://my.webinfra.cloud/api/chat', {
       method: 'POST',
       signal: params.signal,
       headers: {
